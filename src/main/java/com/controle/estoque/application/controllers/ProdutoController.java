@@ -10,6 +10,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import java.util.List;
 
 @Transactional
@@ -24,38 +26,51 @@ public class ProdutoController {
     }
 
     @PostMapping
-    public ResponseEntity<ProdutoResponse> cadastrar(@RequestBody @Valid ProdutoRequest produtoRequest) {
+    public ResponseEntity<ProdutoResponse> cadastrar(@RequestBody @Valid ProdutoRequest produtoRequest,
+                                                     UriComponentsBuilder uriComponentsBuilder) {
+
         ProdutoResponse reponse = service.cadastrar(produtoRequest);
-        return ResponseEntity.ok(reponse);
+
+        var uri = uriComponentsBuilder.path("/produtos/{id}").buildAndExpand(reponse.getId()).toUri();
+
+        return ResponseEntity.created(uri).body(reponse);
     }
 
     @GetMapping
-    public List<ProdutoResponse> listar() {
-        return service.listarDisponiveis();
+    public ResponseEntity<Page<ProdutoResponse>> listar(@PageableDefault(size = 20, sort = {"nome"}) Pageable pageable) {
+        Page<ProdutoResponse> produtos = service.listarDisponiveis(pageable);
+        return ResponseEntity.ok(produtos);
     }
 
     @GetMapping("/buscar")
-    public ProdutoResponse buscar(@RequestParam String nome) {
-        return service.buscarPeloNome(nome);
+    public ResponseEntity<ProdutoResponse> buscar(@RequestParam String nome) {
+        return service.buscarPeloNome(nome)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}/repor")
-    public ProdutoResponse repor(@PathVariable Long id, @RequestParam int quantidade) {
-         return service.reporEstoque(id, quantidade);
+    public ResponseEntity<ProdutoResponse> repor(@PathVariable Long id, @RequestParam int quantidade) {
+         ProdutoResponse response = service.reporEstoque(id, quantidade);
+         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}/vender")
-    public ProdutoResponse vender(@PathVariable Long id, @RequestParam int quantidade) {
-        return service.venderProduto(id, quantidade);
+    public ResponseEntity<ProdutoResponse> vender(@PathVariable Long id, @RequestParam int quantidade) {
+        ProdutoResponse response = service.venderProduto(id, quantidade);
+
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ProdutoResponse atualizar(@PathVariable Long id, @RequestBody ProdutoRequest produtoRequest){
-        return service.atualizar(id, produtoRequest);
+    public ResponseEntity<ProdutoResponse> atualizar(@PathVariable Long id, @RequestBody ProdutoRequest produtoRequest){
+        ProdutoResponse response = service.atualizar(id, produtoRequest);
+         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public void deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.deletar(id);
+        return ResponseEntity.noContent().build();
     }
 }

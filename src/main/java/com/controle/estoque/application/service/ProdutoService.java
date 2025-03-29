@@ -10,6 +10,8 @@ import com.controle.estoque.domain.entities.TipoMovimentacao;
 import com.controle.estoque.domain.entities.Venda;
 import com.controle.estoque.dto.request.ProdutoRequest;
 import com.controle.estoque.dto.response.ProdutoResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,16 +42,14 @@ public class ProdutoService {
         return mapper.toResponse(produtoSalvo);
     }
 
-    public List<ProdutoResponse> listarDisponiveis() {
-        return repository.findByQuantidadeDisponivelGreaterThan(0)
-                .stream()
-                .map(mapper::toResponse)
-                .collect(Collectors.toList());
+    public Page<ProdutoResponse> listarDisponiveis(Pageable pageable) {
+        return repository.findByQuantidadeDisponivelGreaterThan(0, pageable)
+                .map(mapper::toResponse);
     }
 
-    public ProdutoResponse buscarPeloNome(String nome) {
-        Produto produto = repository.findByNomeContainingIgnoreCase(nome);
-        return mapper.toResponse(produto);
+    public Optional<ProdutoResponse> buscarPeloNome(String nome) {
+       return repository.findByNomeContainingIgnoreCase(nome)
+               .map(mapper::toResponse);
     }
 
     public ProdutoResponse atualizar(Long id, ProdutoRequest produtoRequest) {

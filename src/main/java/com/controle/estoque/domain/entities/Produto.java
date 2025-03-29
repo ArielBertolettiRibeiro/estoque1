@@ -2,8 +2,11 @@ package com.controle.estoque.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 import java.util.List;
+
 
 @Data
 @Entity
