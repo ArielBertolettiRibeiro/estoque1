@@ -1,6 +1,6 @@
-package com.controle.estoque.domain.entities;
+package com.controle.estoque.domain.enums;
 
-public enum Categoria {
+public enum Category {
 
     ELETRONICOS(1, "Eletronicos"),
     ALIMENTOS(2, "Alimentos"),
@@ -10,7 +10,7 @@ public enum Categoria {
     private final Integer numero;
     private final String nome;
 
-    Categoria(Integer numero, String nome) {
+    Category(Integer numero, String nome) {
         this.numero = numero;
         this.nome = nome;
     }

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @Table(name = "vendas")
-public class Venda {
+public class Sale {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,9 +26,9 @@ public class Venda {
 
     @ManyToOne
     @JoinColumn(name = "produto_id", nullable = false)
-    private Produto produto;
+    private Product produto;
 
-    public Venda(Integer quantidadeVendida, Produto produto) {
+    public Sale(Integer quantidadeVendida, Product produto) {
         this.quantidadeVendida = quantidadeVendida;
         this.dataVenda = LocalDateTime.now();
         this.produto = produto;

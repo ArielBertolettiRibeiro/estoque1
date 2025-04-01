@@ -1,59 +1,57 @@
 package com.controle.estoque.application.service;
 
-import com.controle.estoque.config.mapper.ProdutoMapper;
-import com.controle.estoque.infrastructure.repository.MovimentacaoEstoqueRepository;
-import com.controle.estoque.infrastructure.repository.ProdutoRepository;
-import com.controle.estoque.infrastructure.repository.VendaRepository;
-import com.controle.estoque.domain.entities.MovimentacaoEstoque;
-import com.controle.estoque.domain.entities.Produto;
-import com.controle.estoque.domain.entities.TipoMovimentacao;
-import com.controle.estoque.domain.entities.Venda;
-import com.controle.estoque.dto.request.ProdutoRequest;
-import com.controle.estoque.dto.response.ProdutoResponse;
+import com.controle.estoque.config.mapper.ProductMapper;
+import com.controle.estoque.infrastructure.repository.StockMovementRepository;
+import com.controle.estoque.infrastructure.repository.ProductRepository;
+import com.controle.estoque.infrastructure.repository.SaleRepository;
+import com.controle.estoque.domain.entities.StockMovement;
+import com.controle.estoque.domain.entities.Product;
+import com.controle.estoque.domain.enums.MovementType;
+import com.controle.estoque.domain.entities.Sale;
+import com.controle.estoque.dto.request.ProductRequest;
+import com.controle.estoque.dto.response.ProductResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Transactional
 @Service
-public class ProdutoService {
+public class ProductService {
 
-    private ProdutoMapper mapper;
-    private ProdutoRepository repository;
-    private MovimentacaoEstoqueRepository movimentacaoEstoqueRepository;
-    private VendaRepository vendaRepository;
+    private ProductMapper mapper;
+    private ProductRepository repository;
+    private StockMovementRepository movimentacaoEstoqueRepository;
+    private SaleRepository vendaRepository;
 
-    public ProdutoService(ProdutoMapper mapper, ProdutoRepository repository, MovimentacaoEstoqueRepository movimentacaoEstoqueRepository, VendaRepository vendaRepository) {
+    public ProductService(ProductMapper mapper, ProductRepository repository, StockMovementRepository movimentacaoEstoqueRepository, SaleRepository vendaRepository) {
         this.mapper = mapper;
         this.repository = repository;
         this.movimentacaoEstoqueRepository = movimentacaoEstoqueRepository;
         this.vendaRepository = vendaRepository;
     }
 
-    public ProdutoResponse cadastrar(ProdutoRequest request) {
-        Produto produto = mapper.toEntity(request);
-        Produto produtoSalvo = repository.save(produto);
+    public ProductResponse cadastrar(ProductRequest request) {
+        Product produto = mapper.toEntity(request);
+        Product produtoSalvo = repository.save(produto);
 
         return mapper.toResponse(produtoSalvo);
     }
 
-    public Page<ProdutoResponse> listarDisponiveis(Pageable pageable) {
+    public Page<ProductResponse> listarDisponiveis(Pageable pageable) {
         return repository.findByQuantidadeDisponivelGreaterThan(0, pageable)
                 .map(mapper::toResponse);
     }
 
-    public Optional<ProdutoResponse> buscarPeloNome(String nome) {
+    public Optional<ProductResponse> buscarPeloNome(String nome) {
        return repository.findByNomeContainingIgnoreCase(nome)
                .map(mapper::toResponse);
     }
 
-    public ProdutoResponse atualizar(Long id, ProdutoRequest produtoRequest) {
-        Produto produto = repository.findById(id)
+    public ProductResponse atualizar(Long id, ProductRequest produtoRequest) {
+        Product produto = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
 
         mapper.toEntity(produtoRequest);
@@ -62,12 +60,12 @@ public class ProdutoService {
         produto.setPreco(produtoRequest.getPreco());
         produto.setQuantidadeDisponivel(produtoRequest.getQuantidadeDisponivel());
 
-        Produto atualizado = repository.save(produto);
+        Product atualizado = repository.save(produto);
         return mapper.toResponse(atualizado);
     }
 
-    public ProdutoResponse reporEstoque(Long id, int quantidade) {
-        Optional<Produto> produto = repository.findById(id);
+    public ProductResponse reporEstoque(Long id, int quantidade) {
+        Optional<Product> produto = repository.findById(id);
         if (produto.isEmpty()) {
             throw new IllegalArgumentException("produto não encontrado!");
         }
@@ -75,18 +73,18 @@ public class ProdutoService {
             throw new IllegalArgumentException("Quantidade adicional deve ser maior que zero!");
         }
 
-        Produto prod = produto.get();
+        Product prod = produto.get();
         prod.setQuantidadeDisponivel(prod.getQuantidadeDisponivel() + quantidade);
         repository.save(prod);
 
-        MovimentacaoEstoque movimentacao = new MovimentacaoEstoque(prod, quantidade, TipoMovimentacao.ENTRADA);
+        StockMovement movimentacao = new StockMovement(prod, quantidade, MovementType.ENTRADA);
         movimentacaoEstoqueRepository.save(movimentacao);
 
         return mapper.toResponse(prod);
     }
 
-    public ProdutoResponse venderProduto(Long id, int quantidadeVendida) {
-        Produto produto = repository.findById(id)
+    public ProductResponse venderProduto(Long id, int quantidadeVendida) {
+        Product produto = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado!"));
 
         if (quantidadeVendida <= 0) {
@@ -100,10 +98,10 @@ public class ProdutoService {
         produto.setQuantidadeDisponivel(produto.getQuantidadeDisponivel() - quantidadeVendida);
         repository.save(produto);
 
-        Venda venda = new Venda(quantidadeVendida, produto);
+        Sale venda = new Sale(quantidadeVendida, produto);
         vendaRepository.save(venda);
 
-        MovimentacaoEstoque movimentacaoEstoque = new MovimentacaoEstoque(produto, quantidadeVendida, TipoMovimentacao.SAIDA);
+        StockMovement movimentacaoEstoque = new StockMovement(produto, quantidadeVendida, MovementType.SAIDA);
         movimentacaoEstoqueRepository.save(movimentacaoEstoque);
 
         return mapper.toResponse(produto);

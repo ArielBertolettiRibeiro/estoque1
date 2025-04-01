@@ -1,6 +1,6 @@
-package com.controle.estoque.domain.entities;
+package com.controle.estoque.domain.enums;
 
-public enum TipoMovimentacao {
+public enum MovementType {
 
     ENTRADA(1, "Entrada"),
     SAIDA(2,"Saída");
@@ -8,7 +8,7 @@ public enum TipoMovimentacao {
     private final Integer tipo;
     private final String nome;
 
-    TipoMovimentacao(Integer tipo, String nome) {
+    MovementType(Integer tipo, String nome) {
         this.tipo = tipo;
         this.nome = nome;
     }

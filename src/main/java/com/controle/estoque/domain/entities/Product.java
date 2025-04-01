@@ -1,8 +1,8 @@
 package com.controle.estoque.domain.entities;
 
+import com.controle.estoque.domain.enums.Category;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "produtos")
-public class Produto {
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +22,7 @@ public class Produto {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "categoria", nullable = false)
-    private Categoria categoria;
+    private Category categoria;
 
     @Column(name = "valor_unidade", nullable = false)
     private BigDecimal preco;
@@ -31,15 +31,15 @@ public class Produto {
     private Integer quantidadeDisponivel;
 
     @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL)
-    private List<Venda> vendas;
+    private List<Sale> vendas;
 
     @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL)
-    private List<MovimentacaoEstoque> movimentacoes;
+    private List<StockMovement> movimentacoes;
 
-    public Produto() {
+    public Product() {
     }
 
-    public Produto(String nome, Categoria categoria, BigDecimal preco, Integer quantidadeDisponivel) {
+    public Product(String nome, Category categoria, BigDecimal preco, Integer quantidadeDisponivel) {
         this.nome = nome;
         this.categoria = categoria;
         this.preco = preco;

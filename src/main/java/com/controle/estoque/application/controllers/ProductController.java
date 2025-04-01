@@ -1,8 +1,8 @@
 package com.controle.estoque.application.controllers;
 
-import com.controle.estoque.application.service.ProdutoService;
-import com.controle.estoque.dto.request.ProdutoRequest;
-import com.controle.estoque.dto.response.ProdutoResponse;
+import com.controle.estoque.application.service.ProductService;
+import com.controle.estoque.dto.request.ProductRequest;
+import com.controle.estoque.dto.response.ProductResponse;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,24 +12,22 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
-
 @Transactional
 @RestController
 @RequestMapping("produtos")
-public class ProdutoController {
+public class ProductController {
 
-    private final ProdutoService service;
+    private final ProductService service;
 
-    public ProdutoController(ProdutoService service) {
+    public ProductController(ProductService service) {
         this.service = service;
     }
 
     @PostMapping
-    public ResponseEntity<ProdutoResponse> cadastrar(@RequestBody @Valid ProdutoRequest produtoRequest,
+    public ResponseEntity<ProductResponse> cadastrar(@RequestBody @Valid ProductRequest produtoRequest,
                                                      UriComponentsBuilder uriComponentsBuilder) {
 
-        ProdutoResponse reponse = service.cadastrar(produtoRequest);
+        ProductResponse reponse = service.cadastrar(produtoRequest);
 
         var uri = uriComponentsBuilder.path("/produtos/{id}").buildAndExpand(reponse.getId()).toUri();
 
@@ -37,34 +35,34 @@ public class ProdutoController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProdutoResponse>> listar(@PageableDefault(size = 20, sort = {"nome"}) Pageable pageable) {
-        Page<ProdutoResponse> produtos = service.listarDisponiveis(pageable);
+    public ResponseEntity<Page<ProductResponse>> listar(@PageableDefault(size = 20, sort = {"nome"}) Pageable pageable) {
+        Page<ProductResponse> produtos = service.listarDisponiveis(pageable);
         return ResponseEntity.ok(produtos);
     }
 
     @GetMapping("/buscar")
-    public ResponseEntity<ProdutoResponse> buscar(@RequestParam String nome) {
+    public ResponseEntity<ProductResponse> buscar(@RequestParam String nome) {
         return service.buscarPeloNome(nome)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}/repor")
-    public ResponseEntity<ProdutoResponse> repor(@PathVariable Long id, @RequestParam int quantidade) {
-         ProdutoResponse response = service.reporEstoque(id, quantidade);
+    public ResponseEntity<ProductResponse> repor(@PathVariable Long id, @RequestParam int quantidade) {
+         ProductResponse response = service.reporEstoque(id, quantidade);
          return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}/vender")
-    public ResponseEntity<ProdutoResponse> vender(@PathVariable Long id, @RequestParam int quantidade) {
-        ProdutoResponse response = service.venderProduto(id, quantidade);
+    public ResponseEntity<ProductResponse> vender(@PathVariable Long id, @RequestParam int quantidade) {
+        ProductResponse response = service.venderProduto(id, quantidade);
 
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProdutoResponse> atualizar(@PathVariable Long id, @RequestBody ProdutoRequest produtoRequest){
-        ProdutoResponse response = service.atualizar(id, produtoRequest);
+    public ResponseEntity<ProductResponse> atualizar(@PathVariable Long id, @RequestBody ProductRequest produtoRequest){
+        ProductResponse response = service.atualizar(id, produtoRequest);
          return ResponseEntity.ok(response);
     }
 

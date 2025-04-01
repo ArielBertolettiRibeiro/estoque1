@@ -1,6 +1,6 @@
 package com.controle.estoque.dto.request;
 
-import com.controle.estoque.domain.entities.Categoria;
+import com.controle.estoque.domain.enums.Category;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -11,13 +11,13 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ProdutoRequest {
+public class ProductRequest {
 
     @NotBlank(message = "Nome é obrigatório.")
     private String nome;
 
     @NotNull(message = "A categoria é obrigatória.")
-    private Categoria categoria;
+    private Category categoria;
 
     @NotNull(message = "O preço é obrigatório.")
     @DecimalMin(value = "0.01", message = "O preço deve ser maior que zero.")
