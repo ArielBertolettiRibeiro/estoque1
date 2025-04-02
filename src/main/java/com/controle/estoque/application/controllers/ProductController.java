@@ -14,7 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @Transactional
 @RestController
-@RequestMapping("produtos")
+@RequestMapping("products")
 public class ProductController {
 
     private final ProductService service;
@@ -24,51 +24,51 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductResponse> cadastrar(@RequestBody @Valid ProductRequest produtoRequest,
-                                                     UriComponentsBuilder uriComponentsBuilder) {
+    public ResponseEntity<ProductResponse> create(@RequestBody @Valid ProductRequest productRequest,
+                                                  UriComponentsBuilder uriComponentsBuilder) {
 
-        ProductResponse reponse = service.cadastrar(produtoRequest);
+        ProductResponse reponse = service.create(productRequest);
 
-        var uri = uriComponentsBuilder.path("/produtos/{id}").buildAndExpand(reponse.getId()).toUri();
+        var uri = uriComponentsBuilder.path("/products/{id}").buildAndExpand(reponse.getId()).toUri();
 
         return ResponseEntity.created(uri).body(reponse);
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProductResponse>> listar(@PageableDefault(size = 20, sort = {"nome"}) Pageable pageable) {
-        Page<ProductResponse> produtos = service.listarDisponiveis(pageable);
-        return ResponseEntity.ok(produtos);
+    public ResponseEntity<Page<ProductResponse>> findAll(@PageableDefault(size = 20, sort = {"nome"}) Pageable pageable) {
+        Page<ProductResponse> products = service.findAll(pageable);
+        return ResponseEntity.ok(products);
     }
 
-    @GetMapping("/buscar")
-    public ResponseEntity<ProductResponse> buscar(@RequestParam String nome) {
-        return service.buscarPeloNome(nome)
+    @GetMapping("/find")
+    public ResponseEntity<ProductResponse> findByName(@RequestParam String name) {
+        return service.findByName(name)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{id}/repor")
-    public ResponseEntity<ProductResponse> repor(@PathVariable Long id, @RequestParam int quantidade) {
-         ProductResponse response = service.reporEstoque(id, quantidade);
+    @PutMapping("/{id}/restock")
+    public ResponseEntity<ProductResponse> restock(@PathVariable Long id, @RequestParam int quantity) {
+         ProductResponse response = service.restock(id, quantity);
          return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{id}/vender")
-    public ResponseEntity<ProductResponse> vender(@PathVariable Long id, @RequestParam int quantidade) {
-        ProductResponse response = service.venderProduto(id, quantidade);
+    @PutMapping("/{id}/sell")
+    public ResponseEntity<ProductResponse> sell(@PathVariable Long id, @RequestParam int quantity) {
+        ProductResponse response = service.sell(id, quantity);
 
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResponse> atualizar(@PathVariable Long id, @RequestBody ProductRequest produtoRequest){
-        ProductResponse response = service.atualizar(id, produtoRequest);
+    public ResponseEntity<ProductResponse> update(@PathVariable Long id, @RequestBody ProductRequest productRequest){
+        ProductResponse response = service.update(id, productRequest);
          return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        service.deletar(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

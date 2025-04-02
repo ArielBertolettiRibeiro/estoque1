@@ -23,34 +23,34 @@ public class ProductService {
 
     private ProductMapper mapper;
     private ProductRepository repository;
-    private StockMovementRepository movimentacaoEstoqueRepository;
-    private SaleRepository vendaRepository;
+    private StockMovementRepository stockMovementRepository;
+    private SaleRepository saleRepository;
 
-    public ProductService(ProductMapper mapper, ProductRepository repository, StockMovementRepository movimentacaoEstoqueRepository, SaleRepository vendaRepository) {
+    public ProductService(ProductMapper mapper, ProductRepository repository, StockMovementRepository stockMovementRepository, SaleRepository saleRepository) {
         this.mapper = mapper;
         this.repository = repository;
-        this.movimentacaoEstoqueRepository = movimentacaoEstoqueRepository;
-        this.vendaRepository = vendaRepository;
+        this.stockMovementRepository = stockMovementRepository;
+        this.saleRepository = saleRepository;
     }
 
-    public ProductResponse cadastrar(ProductRequest request) {
+    public ProductResponse create(ProductRequest request) {
         Product produto = mapper.toEntity(request);
         Product produtoSalvo = repository.save(produto);
 
         return mapper.toResponse(produtoSalvo);
     }
 
-    public Page<ProductResponse> listarDisponiveis(Pageable pageable) {
+    public Page<ProductResponse> findAll(Pageable pageable) {
         return repository.findByQuantidadeDisponivelGreaterThan(0, pageable)
                 .map(mapper::toResponse);
     }
 
-    public Optional<ProductResponse> buscarPeloNome(String nome) {
+    public Optional<ProductResponse> findByName(String nome) {
        return repository.findByNomeContainingIgnoreCase(nome)
                .map(mapper::toResponse);
     }
 
-    public ProductResponse atualizar(Long id, ProductRequest produtoRequest) {
+    public ProductResponse update(Long id, ProductRequest produtoRequest) {
         Product produto = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
 
@@ -64,7 +64,7 @@ public class ProductService {
         return mapper.toResponse(atualizado);
     }
 
-    public ProductResponse reporEstoque(Long id, int quantidade) {
+    public ProductResponse restock(Long id, int quantidade) {
         Optional<Product> produto = repository.findById(id);
         if (produto.isEmpty()) {
             throw new IllegalArgumentException("produto não encontrado!");
@@ -78,12 +78,12 @@ public class ProductService {
         repository.save(prod);
 
         StockMovement movimentacao = new StockMovement(prod, quantidade, MovementType.ENTRADA);
-        movimentacaoEstoqueRepository.save(movimentacao);
+        stockMovementRepository.save(movimentacao);
 
         return mapper.toResponse(prod);
     }
 
-    public ProductResponse venderProduto(Long id, int quantidadeVendida) {
+    public ProductResponse sell(Long id, int quantidadeVendida) {
         Product produto = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado!"));
 
@@ -99,15 +99,15 @@ public class ProductService {
         repository.save(produto);
 
         Sale venda = new Sale(quantidadeVendida, produto);
-        vendaRepository.save(venda);
+        saleRepository.save(venda);
 
         StockMovement movimentacaoEstoque = new StockMovement(produto, quantidadeVendida, MovementType.SAIDA);
-        movimentacaoEstoqueRepository.save(movimentacaoEstoque);
+        stockMovementRepository.save(movimentacaoEstoque);
 
         return mapper.toResponse(produto);
     }
 
-    public void deletar(Long id) {
+    public void delete(Long id) {
         if (!repository.existsById(id)) {
             throw new RuntimeException("Produto não encontrado!");
         }
