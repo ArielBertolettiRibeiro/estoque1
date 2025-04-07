@@ -1,4 +1,4 @@
-package com.controle.estoque.config.mapper;
+package com.controle.estoque.infrastructure.config.mapper;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

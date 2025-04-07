@@ -1,8 +1,8 @@
-package com.controle.estoque.application.controllers;
+package com.controle.estoque.adapters.controllers;
 
 import com.controle.estoque.application.service.ProductService;
-import com.controle.estoque.dto.request.ProductRequest;
-import com.controle.estoque.dto.response.ProductResponse;
+import com.controle.estoque.adapters.dto.requestDTO.ProductRequest;
+import com.controle.estoque.adapters.dto.responseDTO.ProductResponse;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,19 +37,21 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<Page<ProductResponse>> findAll(@PageableDefault(size = 20, sort = {"nome"}) Pageable pageable) {
         Page<ProductResponse> products = service.findAll(pageable);
+
         return ResponseEntity.ok(products);
     }
 
     @GetMapping("/find")
     public ResponseEntity<ProductResponse> findByName(@RequestParam String name) {
-        return service.findByName(name)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        ProductResponse response = service.findByName(name);
+
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}/restock")
     public ResponseEntity<ProductResponse> restock(@PathVariable Long id, @RequestParam int quantity) {
          ProductResponse response = service.restock(id, quantity);
+
          return ResponseEntity.ok(response);
     }
 
@@ -63,12 +65,14 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponse> update(@PathVariable Long id, @RequestBody ProductRequest productRequest){
         ProductResponse response = service.update(id, productRequest);
+
          return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
+
         return ResponseEntity.noContent().build();
     }
 }

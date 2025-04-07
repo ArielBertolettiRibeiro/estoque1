@@ -1,4 +1,4 @@
-package com.controle.estoque.config.cors;
+package com.controle.estoque.infrastructure.config.cors;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

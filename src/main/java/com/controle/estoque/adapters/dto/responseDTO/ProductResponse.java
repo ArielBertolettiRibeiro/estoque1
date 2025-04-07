@@ -1,4 +1,4 @@
-package com.controle.estoque.dto.response;
+package com.controle.estoque.adapters.dto.responseDTO;
 
 import com.controle.estoque.domain.enums.Category;
 import lombok.AllArgsConstructor;
