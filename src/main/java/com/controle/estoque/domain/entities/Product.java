@@ -17,32 +17,32 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nome", nullable = false)
-    private String nome;
+    @Column(name = "name", nullable = false)
+    private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "categoria", nullable = false)
-    private Category categoria;
+    @Column(name = "category", nullable = false)
+    private Category category;
 
-    @Column(name = "valor_unidade", nullable = false)
-    private BigDecimal preco;
+    @Column(name = "unit_price", nullable = false)
+    private BigDecimal price;
 
-    @Column(name = "quantidade_disponivel", nullable = false)
-    private Integer quantidadeDisponivel;
+    @Column(name = "availableQuantity", nullable = false)
+    private Integer availableQuantity;
 
-    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL)
-    private List<Sale> vendas;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<Sale> sales;
 
-    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL)
-    private List<StockMovement> movimentacoes;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<StockMovement> stockMovements;
 
     public Product() {
     }
 
-    public Product(String nome, Category categoria, BigDecimal preco, Integer quantidadeDisponivel) {
-        this.nome = nome;
-        this.categoria = categoria;
-        this.preco = preco;
-        this.quantidadeDisponivel = quantidadeDisponivel;
+    public Product(String name, Category category, BigDecimal price, Integer availableQuantity) {
+        this.name = name;
+        this.category = category;
+        this.price = price;
+        this.availableQuantity = availableQuantity;
     }
 }

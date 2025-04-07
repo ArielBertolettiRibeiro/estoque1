@@ -5,11 +5,11 @@ public enum MovementType {
     ENTRADA(1, "Entrada"),
     SAIDA(2,"Saída");
 
-    private final Integer tipo;
-    private final String nome;
+    private final Integer type;
+    private final String name;
 
-    MovementType(Integer tipo, String nome) {
-        this.tipo = tipo;
-        this.nome = nome;
+    MovementType(Integer type, String name) {
+        this.type = type;
+        this.name = name;
     }
 }

@@ -39,23 +39,22 @@ public class ProductService {
 
     public ProductResponse create(ProductRequest request) {
 
-        repository.findByNomeAndCategoriaAndPrecoAndQuantidadeDisponivel(
-                request.getNome(),
-                request.getCategoria(),
-                request.getPreco(),
-                request.getQuantidadeDisponivel()
+        repository.findByNameAndCategoryAndPrice(
+                request.getName(),
+                request.getCategory(),
+                request.getPrice()
         ).ifPresent(produto -> {
             throw new ProductAlreadyExistsException("The product already exists with the same data provided.");
         });
 
-        Product produto = mapper.toEntity(request);
-        Product produtoSalvo = repository.save(produto);
+        Product product = mapper.toEntity(request);
+        Product savedProduct = repository.save(product);
 
-        return mapper.toResponse(produtoSalvo);
+        return mapper.toResponse(savedProduct);
     }
 
     public Page<ProductResponse> findAll(Pageable pageable) {
-        Page<ProductResponse> response = repository.findByQuantidadeDisponivelGreaterThan(0, pageable)
+        Page<ProductResponse> response = repository.findByAvailableQuantityGreaterThan(0, pageable)
                 .map(mapper::toResponse);
 
         if (response.isEmpty()) {
@@ -65,67 +64,67 @@ public class ProductService {
         return response;
     }
 
-    public ProductResponse findByName(String nome) {
-       return repository.findByNomeContainingIgnoreCase(nome)
+    public ProductResponse findByName(String name) {
+       return repository.findByNameContainingIgnoreCase(name)
                .map(mapper::toResponse)
                .orElseThrow(() -> new ProductNotFoundException("No product found!"));
     }
 
-    public ProductResponse update(Long id, ProductRequest produtoRequest) {
-        Product produto = repository.findById(id)
+    public ProductResponse update(Long id, ProductRequest productRequest) {
+        Product product = repository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("No product found!"));
 
-        mapper.toEntity(produtoRequest);
-        produto.setNome(produtoRequest.getNome());
-        produto.setCategoria(produtoRequest.getCategoria());
-        produto.setPreco(produtoRequest.getPreco());
-        produto.setQuantidadeDisponivel(produtoRequest.getQuantidadeDisponivel());
+        mapper.toEntity(productRequest);
+        product.setName(productRequest.getName());
+        product.setCategory(productRequest.getCategory());
+        product.setPrice(productRequest.getPrice());
+        product.setAvailableQuantity(productRequest.getAvailableQuantity());
 
-        Product atualizado = repository.save(produto);
-        return mapper.toResponse(atualizado);
+        Product productUpdate = repository.save(product);
+        return mapper.toResponse(productUpdate);
     }
 
-    public ProductResponse restock(Long id, int quantidade) {
-        Optional<Product> produto = repository.findById(id);
-        if (produto.isEmpty()) {
+    public ProductResponse restock(Long id, int quantity) {
+        Optional<Product> product = repository.findById(id);
+        if (product.isEmpty()) {
             throw new ProductNotFoundException("No product found!");
         }
-        if (quantidade <= 0 ) {
+        if (quantity <= 0 ) {
             throw new InvalidQuantityException("The value must be greater than zero!");
         }
 
-        Product prod = produto.get();
-        prod.setQuantidadeDisponivel(prod.getQuantidadeDisponivel() + quantidade);
+        Product prod = product.get();
+        prod.setAvailableQuantity(prod.getAvailableQuantity() + quantity);
         repository.save(prod);
 
-        StockMovement movimentacao = new StockMovement(prod, quantidade, MovementType.ENTRADA);
-        stockMovementRepository.save(movimentacao);
+        StockMovement stockMovement = new StockMovement(prod, quantity, MovementType.ENTRADA);
+        stockMovementRepository.save(stockMovement);
 
         return mapper.toResponse(prod);
     }
 
-    public ProductResponse sell(Long id, int quantidadeVendida) {
-        Product produto = repository.findById(id)
+    public ProductResponse sell(Long id, int quantitySold) {
+        Product product = repository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("No product found!"));
 
-        if (quantidadeVendida <= 0) {
+        if (quantitySold <= 0) {
             throw new InvalidQuantityException("The value must be greater than zero!");
         }
 
-        if (produto.getQuantidadeDisponivel() < quantidadeVendida) {
+        if (product.getAvailableQuantity() < quantitySold) {
             throw new InsufficientStockException("Insufficient stock!");
         }
 
-        produto.setQuantidadeDisponivel(produto.getQuantidadeDisponivel() - quantidadeVendida);
-        repository.save(produto);
+        product.setAvailableQuantity(product.getAvailableQuantity() - quantitySold);
+        repository.save(product);
 
-        Sale venda = new Sale(quantidadeVendida, produto);
-        saleRepository.save(venda);
+        Sale sale = new Sale(quantitySold, product);
+        saleRepository.save(sale);
 
-        StockMovement movimentacaoEstoque = new StockMovement(produto, quantidadeVendida, MovementType.SAIDA);
-        stockMovementRepository.save(movimentacaoEstoque);
+        StockMovement stockMovement = new StockMovement(product, quantitySold, MovementType.SAIDA);
+        stockMovementRepository.save(stockMovement);
 
-        return mapper.toResponse(produto);
+        return mapper.toResponse(product);
     }
 
     public void delete(Long id) {

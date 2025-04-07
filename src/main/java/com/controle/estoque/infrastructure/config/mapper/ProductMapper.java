@@ -18,20 +18,20 @@ public class ProductMapper {
         this.modelMapper = modelMapper;
     }
 
-    public ProductRequest toRequest(Product produto) {
-        return modelMapper.map(produto, ProductRequest.class);
+    public ProductRequest toRequest(Product product) {
+        return modelMapper.map(product, ProductRequest.class);
     }
 
-    public Product toEntity(ProductRequest produtoRequest) {
-        return modelMapper.map(produtoRequest, Product.class);
+    public Product toEntity(ProductRequest productRequest) {
+        return modelMapper.map(productRequest, Product.class);
     }
 
-    public ProductResponse toResponse(Product produto) {
-        return modelMapper.map(produto, ProductResponse.class);
+    public ProductResponse toResponse(Product product) {
+        return modelMapper.map(product, ProductResponse.class);
     }
 
-    public List<ProductResponse> toResponseList(List<Product> produtos) {
-        return produtos.stream()
+    public List<ProductResponse> toResponseList(List<Product> products) {
+        return products.stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }

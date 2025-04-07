@@ -13,10 +13,10 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    Page<Product> findByQuantidadeDisponivelGreaterThan(Integer quantidade, Pageable pageable);
+    Page<Product> findByAvailableQuantityGreaterThan(Integer quantity, Pageable pageable);
 
-    Optional<Product> findByNomeContainingIgnoreCase(String nome);
+    Optional<Product> findByNameContainingIgnoreCase(String name);
 
-    Optional<Product> findByNomeAndCategoriaAndPrecoAndQuantidadeDisponivel(
-            String nome, Category categoria, BigDecimal preco, Integer quantidadeDisponivel);
+    Optional<Product> findByNameAndCategoryAndPrice(
+            String name, Category category, BigDecimal price);
 }

@@ -23,14 +23,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleJsonParseException(HttpMessageNotReadableException ex, HttpServletRequest request) {
-        String message = "Requisição inválida. Verifique se todos os campos foram preenchidos corretamente.";
+        String message = "Invalid request. Please check if all fields have been filled out correctly.";
 
         if (ex.getCause() instanceof MismatchedInputException) {
             MismatchedInputException cause = (MismatchedInputException) ex.getCause();
 
             if (cause.getPath().size() > 0) {
                 String fieldName = cause.getPath().get(0).getFieldName();
-                message = "O campo '" + fieldName + "' não pode ser vazio ou está formatado incorretamente.";
+                message = "The field '" + fieldName + "' cannot be empty or is incorrectly formatted.";
             }
         }
 

@@ -13,17 +13,17 @@ import java.math.BigDecimal;
 @Data
 public class ProductRequest {
 
-    @NotBlank(message = "Nome é obrigatório.")
-    private String nome;
+    @NotBlank(message = "Name is required.")
+    private String name;
 
-    @NotNull(message = "A categoria é obrigatória.")
-    private Category categoria;
+    @NotNull(message = "Category is required.")
+    private Category category;
 
-    @NotNull(message = "O preço é obrigatório.")
-    @DecimalMin(value = "0.01", message = "O preço deve ser maior que zero.")
-    private BigDecimal preco;
+    @NotNull(message = "Price is required.")
+    @DecimalMin(value = "0.01", message = "Price must be greater than zero.")
+    private BigDecimal price;
 
-    @NotNull(message = "A quantidade disponível é obrigatória.")
-    @Min(value = 0, message = "A qauntidade disponível não pode ser negativa.")
-    private Integer quantidadeDisponivel;
+    @NotNull(message = "Available quantity is required.")
+    @Min(value = 0, message = "Available quantity cannot be negative.")
+    private Integer availableQuantity;
 }

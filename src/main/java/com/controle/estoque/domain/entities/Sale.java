@@ -11,27 +11,27 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "vendas")
+@Table(name = "sales")
 public class Sale {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "quantidade_vendida", nullable = false)
-    private Integer quantidadeVendida;
+    @Column(name = "sold_quantity", nullable = false)
+    private Integer soldQuantity;
 
-    @Column(name = "data_venda", updatable = false)
-    private LocalDateTime dataVenda = LocalDateTime.now();
+    @Column(name = "sale_date", updatable = false)
+    private LocalDateTime saleDate = LocalDateTime.now();
 
     @ManyToOne
-    @JoinColumn(name = "produto_id", nullable = false)
-    private Product produto;
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
-    public Sale(Integer quantidadeVendida, Product produto) {
-        this.quantidadeVendida = quantidadeVendida;
-        this.dataVenda = LocalDateTime.now();
-        this.produto = produto;
+    public Sale(Integer soldQuantity, Product product) {
+        this.soldQuantity = soldQuantity;
+        this.saleDate = LocalDateTime.now();
+        this.product = product;
     }
 
 

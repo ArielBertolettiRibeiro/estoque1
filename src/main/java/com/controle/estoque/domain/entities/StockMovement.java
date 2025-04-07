@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "movimentacoes_estoque")
+@Table(name = "stock_movements")
 public class StockMovement {
 
     @Id
@@ -19,22 +19,22 @@ public class StockMovement {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "produto_id", nullable = false)
-    private Product produto;
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
-    @Column(name = "quantidade_movimentada", nullable = false)
-    private int quantidadeMovimentada;
+    @Column(name = "moved_quantity", nullable = false)
+    private int movedQuantity;
 
     @Enumerated(EnumType.STRING)
-    private MovementType tipo;
+    private MovementType type;
 
-    @Column(name = "data_movimentacao", nullable = false, updatable = false)
-    private LocalDateTime dataMovimentacao = LocalDateTime.now();
+    @Column(name = "movement_date", nullable = false, updatable = false)
+    private LocalDateTime movementDate = LocalDateTime.now();
 
-    public StockMovement(Product produto, int quantidadeMovimentada, MovementType tipo) {
-        this.produto = produto;
-        this.quantidadeMovimentada = quantidadeMovimentada;
-        this.tipo = tipo;
-        this.dataMovimentacao = LocalDateTime.now();
+    public StockMovement(Product product, int movedQuantity, MovementType type) {
+        this.product = product;
+        this.movedQuantity = movedQuantity;
+        this.type = type;
+        this.movementDate = LocalDateTime.now();
     }
 }

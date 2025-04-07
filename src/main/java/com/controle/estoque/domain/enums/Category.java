@@ -7,11 +7,11 @@ public enum Category {
     ESPORTES(3, "Esportes"),
     LAZER(4, "Lazer");
 
-    private final Integer numero;
-    private final String nome;
+    private final Integer number;
+    private final String name;
 
-    Category(Integer numero, String nome) {
-        this.numero = numero;
-        this.nome = nome;
+    Category(Integer number, String name) {
+        this.number = number;
+        this.name = name;
     }
 }
