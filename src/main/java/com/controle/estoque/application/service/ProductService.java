@@ -14,6 +14,7 @@ import com.controle.estoque.domain.enums.MovementType;
 import com.controle.estoque.domain.entities.Sale;
 import com.controle.estoque.adapters.dto.requestDTO.ProductRequest;
 import com.controle.estoque.adapters.dto.responseDTO.ProductResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,22 +22,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-@Transactional
 @Service
+@RequiredArgsConstructor
 public class ProductService {
 
-    private ProductMapper mapper;
-    private ProductRepository repository;
-    private StockMovementRepository stockMovementRepository;
-    private SaleRepository saleRepository;
+    private final ProductMapper mapper;
+    private final ProductRepository repository;
+    private final StockMovementRepository stockMovementRepository;
+    private final SaleRepository saleRepository;
 
-    public ProductService(ProductMapper mapper, ProductRepository repository, StockMovementRepository stockMovementRepository, SaleRepository saleRepository) {
-        this.mapper = mapper;
-        this.repository = repository;
-        this.stockMovementRepository = stockMovementRepository;
-        this.saleRepository = saleRepository;
-    }
-
+    @Transactional
     public ProductResponse create(ProductRequest request) {
 
         repository.findByNameAndCategoryAndPrice(
@@ -47,10 +42,7 @@ public class ProductService {
             throw new ProductAlreadyExistsException("The product already exists with the same data provided.");
         });
 
-        Product product = mapper.toEntity(request);
-        Product savedProduct = repository.save(product);
-
-        return mapper.toResponse(savedProduct);
+        return mapper.toResponse(repository.save(mapper.toEntity(request)));
     }
 
     public Page<ProductResponse> findAll(Pageable pageable) {
@@ -70,6 +62,7 @@ public class ProductService {
                .orElseThrow(() -> new ProductNotFoundException("No product found!"));
     }
 
+    @Transactional
     public ProductResponse update(Long id, ProductRequest productRequest) {
         Product product = repository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("No product found!"));
@@ -84,6 +77,7 @@ public class ProductService {
         return mapper.toResponse(productUpdate);
     }
 
+    @Transactional
     public ProductResponse restock(Long id, int quantity) {
         Optional<Product> product = repository.findById(id);
         if (product.isEmpty()) {
@@ -103,6 +97,7 @@ public class ProductService {
         return mapper.toResponse(prod);
     }
 
+    @Transactional
     public ProductResponse sell(Long id, int quantitySold) {
         Product product = repository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("No product found!"));
@@ -127,6 +122,7 @@ public class ProductService {
         return mapper.toResponse(product);
     }
 
+    @Transactional
     public void delete(Long id) {
         if (!repository.existsById(id)) {
             throw new ProductNotFoundException("No product found!");
