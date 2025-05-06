@@ -1,10 +1,9 @@
-package com.controle.estoque.adapters.dto.responseDTO;
+package com.controle.estoque.adapters.dto.productDTO;
 
 import com.controle.estoque.domain.enums.Category;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
 
 @AllArgsConstructor

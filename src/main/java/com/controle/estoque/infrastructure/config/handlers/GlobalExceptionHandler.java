@@ -1,4 +1,4 @@
-package com.controle.estoque.adapters.exceptions;
+package com.controle.estoque.infrastructure.config.handlers;
 
 import com.controle.estoque.application.exceptions.InsufficientStockException;
 import com.controle.estoque.application.exceptions.InvalidQuantityException;
@@ -13,7 +13,6 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
 import java.time.LocalDateTime;
 import java.util.List;
 

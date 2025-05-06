@@ -1,4 +1,4 @@
-package com.controle.estoque.adapters.dto.requestDTO;
+package com.controle.estoque.adapters.dto.productDTO;
 
 import com.controle.estoque.domain.enums.Category;
 import jakarta.validation.constraints.DecimalMin;

@@ -12,8 +12,8 @@ import com.controle.estoque.domain.entities.StockMovement;
 import com.controle.estoque.domain.entities.Product;
 import com.controle.estoque.domain.enums.MovementType;
 import com.controle.estoque.domain.entities.Sale;
-import com.controle.estoque.adapters.dto.requestDTO.ProductRequest;
-import com.controle.estoque.adapters.dto.responseDTO.ProductResponse;
+import com.controle.estoque.adapters.dto.productDTO.ProductRequest;
+import com.controle.estoque.adapters.dto.productDTO.ProductResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +45,7 @@ public class ProductService {
         return mapper.toResponse(repository.save(mapper.toEntity(request)));
     }
 
+    @Transactional(readOnly = true)
     public Page<ProductResponse> findAll(Pageable pageable) {
         Page<ProductResponse> response = repository.findByAvailableQuantityGreaterThan(0, pageable)
                 .map(mapper::toResponse);
@@ -56,6 +57,7 @@ public class ProductService {
         return response;
     }
 
+    @Transactional(readOnly = true)
     public ProductResponse findByName(String name) {
        return repository.findByNameContainingIgnoreCase(name)
                .map(mapper::toResponse)
@@ -73,8 +75,7 @@ public class ProductService {
         product.setPrice(productRequest.getPrice());
         product.setAvailableQuantity(productRequest.getAvailableQuantity());
 
-        Product productUpdate = repository.save(product);
-        return mapper.toResponse(productUpdate);
+        return mapper.toResponse(repository.save(product));
     }
 
     @Transactional

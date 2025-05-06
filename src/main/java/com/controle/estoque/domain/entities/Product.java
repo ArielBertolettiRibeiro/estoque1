@@ -3,13 +3,13 @@ package com.controle.estoque.domain.entities;
 import com.controle.estoque.domain.enums.Category;
 import jakarta.persistence.*;
 import lombok.Data;
-
+import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.util.List;
 
-
 @Data
 @Entity
+@NoArgsConstructor
 @Table(name = "produtos")
 public class Product {
 
@@ -35,9 +35,6 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<StockMovement> stockMovements;
-
-    public Product() {
-    }
 
     public Product(String name, Category category, BigDecimal price, Integer availableQuantity) {
         this.name = name;

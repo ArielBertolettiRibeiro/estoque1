@@ -1,4 +1,4 @@
-package com.controle.estoque.adapters.exceptions;
+package com.controle.estoque.infrastructure.config.handlers;
 
 import java.time.LocalDateTime;
 

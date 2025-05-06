@@ -1,15 +1,14 @@
 package com.controle.estoque.adapters.controllers;
 
 import com.controle.estoque.application.service.ProductService;
-import com.controle.estoque.adapters.dto.requestDTO.ProductRequest;
-import com.controle.estoque.adapters.dto.responseDTO.ProductResponse;
+import com.controle.estoque.adapters.dto.productDTO.ProductRequest;
+import com.controle.estoque.adapters.dto.productDTO.ProductResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
