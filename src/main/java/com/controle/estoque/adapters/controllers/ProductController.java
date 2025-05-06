@@ -4,6 +4,7 @@ import com.controle.estoque.application.service.ProductService;
 import com.controle.estoque.adapters.dto.requestDTO.ProductRequest;
 import com.controle.estoque.adapters.dto.responseDTO.ProductResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -12,20 +13,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Transactional
 @RestController
 @RequestMapping("products")
+@RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService service;
 
-    public ProductController(ProductService service) {
-        this.service = service;
-    }
-
     @PostMapping
-    public ResponseEntity<ProductResponse> create(@RequestBody @Valid ProductRequest productRequest,
-                                                  UriComponentsBuilder uriComponentsBuilder) {
+    public ResponseEntity<ProductResponse> create(@RequestBody @Valid ProductRequest productRequest, UriComponentsBuilder uriComponentsBuilder) {
 
         ProductResponse reponse = service.create(productRequest);
 
@@ -36,43 +32,32 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<Page<ProductResponse>> findAll(@PageableDefault(size = 20, sort = {"name"}) Pageable pageable) {
-        Page<ProductResponse> products = service.findAll(pageable);
-
-        return ResponseEntity.ok(products);
+        return ResponseEntity.ok(service.findAll(pageable));
     }
 
     @GetMapping("/find")
     public ResponseEntity<ProductResponse> findByName(@RequestParam String name) {
-        ProductResponse response = service.findByName(name);
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(service.findByName(name));
     }
 
     @PutMapping("/{id}/restock")
     public ResponseEntity<ProductResponse> restock(@PathVariable Long id, @RequestParam int quantity) {
-         ProductResponse response = service.restock(id, quantity);
-
-         return ResponseEntity.ok(response);
+         return ResponseEntity.ok(service.restock(id, quantity));
     }
 
     @PutMapping("/{id}/sell")
     public ResponseEntity<ProductResponse> sell(@PathVariable Long id, @RequestParam int quantity) {
-        ProductResponse response = service.sell(id, quantity);
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(service.sell(id, quantity));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResponse> update(@PathVariable Long id, @RequestBody ProductRequest productRequest){
-        ProductResponse response = service.update(id, productRequest);
-
-         return ResponseEntity.ok(response);
+    public ResponseEntity<ProductResponse> update(@PathVariable Long id,@Valid @RequestBody ProductRequest productRequest){
+         return ResponseEntity.ok(service.update(id, productRequest));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
-
         return ResponseEntity.noContent().build();
     }
 }
