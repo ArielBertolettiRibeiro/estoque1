@@ -21,7 +21,6 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ProductResponse> create(@RequestBody @Valid ProductRequest productRequest, UriComponentsBuilder uriComponentsBuilder) {
-
         ProductResponse reponse = service.create(productRequest);
 
         var uri = uriComponentsBuilder.path("/products/{id}").buildAndExpand(reponse.getId()).toUri();
