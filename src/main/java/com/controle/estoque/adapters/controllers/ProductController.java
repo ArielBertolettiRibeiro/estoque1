@@ -1,8 +1,8 @@
 package com.controle.estoque.adapters.controllers;
 
-import com.controle.estoque.application.service.ProductService;
-import com.controle.estoque.adapters.dto.productDTO.ProductRequest;
-import com.controle.estoque.adapters.dto.productDTO.ProductResponse;
+import com.controle.estoque.application.product.service.ProductServiceImpl;
+import com.controle.estoque.application.product.dto.ProductRequest;
+import com.controle.estoque.application.product.dto.ProductResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,7 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class ProductController {
 
-    private final ProductService service;
+    private final ProductServiceImpl service;
 
     @PostMapping
     public ResponseEntity<ProductResponse> create(@RequestBody @Valid ProductRequest productRequest, UriComponentsBuilder uriComponentsBuilder) {
