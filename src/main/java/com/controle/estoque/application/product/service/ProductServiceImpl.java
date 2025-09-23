@@ -1,133 +1,58 @@
 package com.controle.estoque.application.product.service;
 
-import com.controle.estoque.application.product.exception.InvalidQuantityException;
-import com.controle.estoque.application.product.exception.ProductAlreadyExistsException;
-import com.controle.estoque.application.product.exception.ProductNotFoundException;
-import com.controle.estoque.application.product.exception.InsufficientStockException;
-import com.controle.estoque.infrastructure.config.mapper.ProductMapper;
-import com.controle.estoque.infrastructure.persistence.StockMovementRepository;
-import com.controle.estoque.infrastructure.persistence.ProductRepository;
-import com.controle.estoque.infrastructure.persistence.SaleRepository;
-import com.controle.estoque.domain.model.StockMovement;
 import com.controle.estoque.domain.model.Product;
-import com.controle.estoque.domain.enums.MovementType;
-import com.controle.estoque.domain.model.Sale;
-import com.controle.estoque.application.product.dto.ProductRequest;
-import com.controle.estoque.application.product.dto.ProductResponse;
+import com.controle.estoque.domain.repository.ProductRepository;
+import com.controle.estoque.shared.exceptions.BusinessException;
+import com.controle.estoque.shared.exceptions.codes.ProductError;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ProductServiceImpl {
+public class ProductServiceImpl implements ProductService {
 
-    private final ProductMapper mapper;
     private final ProductRepository repository;
-    private final StockMovementRepository stockMovementRepository;
-    private final SaleRepository saleRepository;
 
-    @Transactional
-    public ProductResponse create(ProductRequest request) {
-
-        repository.findByNameAndCategoryAndPrice(
-                request.getName(),
-                request.getCategory(),
-                request.getPrice()
-        ).ifPresent(produto -> {
-            throw new ProductAlreadyExistsException("The product already exists with the same data provided.");
-        });
-
-        return mapper.toResponse(repository.save(mapper.toEntity(request)));
+    @Override
+    public Product save(Product product) {
+        return repository.save(product);
     }
 
-    @Transactional(readOnly = true)
-    public Page<ProductResponse> findAll(Pageable pageable) {
-        Page<ProductResponse> response = repository.findByAvailableQuantityGreaterThan(0, pageable)
-                .map(mapper::toResponse);
-
-        if (response.isEmpty()) {
-            throw new ProductNotFoundException("No product found!");
-        }
-
-        return response;
+    @Override
+    public Product findById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new BusinessException(
+                        ProductError.NOT_FOUND, new Object[]{id}
+                ));
     }
 
-    @Transactional(readOnly = true)
-    public ProductResponse findByName(String name) {
-       return repository.findByNameContainingIgnoreCase(name)
-               .map(mapper::toResponse)
-               .orElseThrow(() -> new ProductNotFoundException("No product found!"));
+    @Override
+    public Page<Product> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 
-    @Transactional
-    public ProductResponse update(Long id, ProductRequest productRequest) {
-        Product product = repository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("No product found!"));
-
-        mapper.toEntity(productRequest);
-        product.setName(productRequest.getName());
-        product.setCategory(productRequest.getCategory());
-        product.setPrice(productRequest.getPrice());
-        product.setAvailableQuantity(productRequest.getAvailableQuantity());
-
-        return mapper.toResponse(repository.save(product));
+    @Override
+    public Page<Product> findByCategory(String category, Pageable pageable) {
+        return repository.findByCategory(category, pageable);
     }
 
-    @Transactional
-    public ProductResponse restock(Long id, int quantity) {
-        Optional<Product> product = repository.findById(id);
-        if (product.isEmpty()) {
-            throw new ProductNotFoundException("No product found!");
-        }
-        if (quantity <= 0 ) {
-            throw new InvalidQuantityException("The value must be greater than zero!");
-        }
-
-        Product prod = product.get();
-        prod.setAvailableQuantity(prod.getAvailableQuantity() + quantity);
-        repository.save(prod);
-
-        StockMovement stockMovement = new StockMovement(prod, quantity, MovementType.ENTRADA);
-        stockMovementRepository.save(stockMovement);
-
-        return mapper.toResponse(prod);
+    @Override
+    public Page<Product> findByName(String name, Pageable pageable) {
+        return repository.findByName(name, pageable);
     }
 
-    @Transactional
-    public ProductResponse sell(Long id, int quantitySold) {
-        Product product = repository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("No product found!"));
-
-        if (quantitySold <= 0) {
-            throw new InvalidQuantityException("The value must be greater than zero!");
-        }
-
-        if (product.getAvailableQuantity() < quantitySold) {
-            throw new InsufficientStockException("Insufficient stock!");
-        }
-
-        product.setAvailableQuantity(product.getAvailableQuantity() - quantitySold);
-        repository.save(product);
-
-        Sale sale = new Sale(quantitySold, product);
-        saleRepository.save(sale);
-
-        StockMovement stockMovement = new StockMovement(product, quantitySold, MovementType.SAIDA);
-        stockMovementRepository.save(stockMovement);
-
-        return mapper.toResponse(product);
+    @Override
+    public Page<Product> findAvailableProducts(Pageable pageable) {
+        return repository.findAvailableProducts(pageable);
     }
 
-    @Transactional
-    public void delete(Long id) {
-        if (!repository.existsById(id)) {
-            throw new ProductNotFoundException("No product found!");
-        }
-     repository.deleteById(id);
+    @Override
+    public Integer findAvailableQuantityById(Long id) {
+        return repository.findAvailableQuantityById(id)
+                .orElseThrow(() -> new BusinessException(
+                        ProductError.NOT_FOUND, new Object[]{id}
+                ));
     }
 }

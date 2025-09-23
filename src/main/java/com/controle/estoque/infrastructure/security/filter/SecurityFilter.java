@@ -1,6 +1,6 @@
 package com.controle.estoque.infrastructure.security.filter;
 
-import com.controle.estoque.infrastructure.persistence.UserRepository;
+import com.controle.estoque.domain.repository.UserRepository;
 import com.controle.estoque.infrastructure.security.token.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

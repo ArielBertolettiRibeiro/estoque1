@@ -16,7 +16,8 @@ public class i18nConfig extends AcceptHeaderLocaleResolver {
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource ms = new ReloadableResourceBundleMessageSource();
 
-        ms.setBasenames("classpath:i18nKey/product_message");
+        ms.setBasenames("classpath:i18nKey/message",
+                "classpath:i18nKey/product_message");
         ms.setDefaultEncoding("UTF-8");
         ms.setFallbackToSystemLocale(false);
         return ms;

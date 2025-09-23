@@ -1,6 +1,6 @@
 package com.controle.estoque.application.auth.service;
 
-import com.controle.estoque.infrastructure.persistence.UserRepository;
+import com.controle.estoque.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

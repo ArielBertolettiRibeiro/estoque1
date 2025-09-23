@@ -3,23 +3,22 @@ package com.controle.estoque.shared.exceptions.codes;
 import com.controle.estoque.shared.exceptions.ErrorCode;
 import org.springframework.http.HttpStatus;
 
-public enum ProductError implements ErrorCode {
+public enum TokenError implements ErrorCode {
 
-    NOT_FOUND("PRODUCT_NOT_FOUND", "product.not.found", HttpStatus.NOT_FOUND),
-    INVALID_PRICE("PRODUCT_INVALID_PRICE", "product.invalid.price", HttpStatus.BAD_REQUEST),
-    INVALID_QUANTITY("PRODUCT_INVALID_QUANTITY", "product.invalid.quantity", HttpStatus.BAD_REQUEST),
-    ALREADY_DEACTIVATED("Produto já está desativado.", "product.already.deactivated", HttpStatus.BAD_REQUEST);
-
+    INVALID("TOKEN.INVALID", "token.invalid", HttpStatus.UNAUTHORIZED),
+    VALIDATION_FAILED("TOKEN.VALIDATION_FAILED", "token.validation.failed", HttpStatus.UNAUTHORIZED),
+    GENERATION_FAILED("TOKEN.GENERATION_FAILED", "token.generation.failed", HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final String code;
     private final String key;
     private final HttpStatus status;
 
-    ProductError(String code, String key, HttpStatus status) {
+    TokenError(String code, String key, HttpStatus status) {
         this.code = code;
         this.key = key;
         this.status = status;
     }
+
 
     @Override
     public String code() {

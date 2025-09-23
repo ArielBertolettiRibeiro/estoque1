@@ -4,17 +4,16 @@ import com.controle.estoque.domain.enums.Category;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ProductResponse {
+public class ProductUpdateRequest {
 
-    private Long id;
     private String name;
     private Category category;
     private BigDecimal price;
     private Integer availableQuantity;
-    private Boolean active;
 }

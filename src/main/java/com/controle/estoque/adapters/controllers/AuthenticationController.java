@@ -4,7 +4,7 @@ import com.controle.estoque.application.auth.dto.AuthenticationDTO;
 import com.controle.estoque.application.auth.dto.LoginResponseDTO;
 import com.controle.estoque.application.auth.dto.RegisterDTO;
 import com.controle.estoque.domain.model.User;
-import com.controle.estoque.infrastructure.persistence.UserRepository;
+import com.controle.estoque.domain.repository.UserRepository;
 import com.controle.estoque.infrastructure.security.token.TokenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

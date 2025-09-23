@@ -4,9 +4,8 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.controle.estoque.application.product.exception.InvalidTokenException;
-import com.controle.estoque.application.auth.exception.TokenGenerationException;
-import com.controle.estoque.application.auth.exception.TokenValidationException;
+import com.controle.estoque.domain.exception.TokenGenerationException;
+import com.controle.estoque.domain.exception.TokenValidationException;
 import com.controle.estoque.domain.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -39,7 +38,7 @@ public class TokenService {
     public String getSubject(String tokenJWT) {
         try {
             if (tokenJWT == null || tokenJWT.trim().isEmpty()) {
-                throw new InvalidTokenException("TOKEN INVÁLIDO OU VAZIO!");
+                throw new TokenValidationException("TOKEN INVÁLIDO OU VAZIO!");
             }
 
             var algorithm = Algorithm.HMAC256(secret);

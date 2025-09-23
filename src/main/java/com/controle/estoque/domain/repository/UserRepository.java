@@ -1,4 +1,4 @@
-package com.controle.estoque.infrastructure.persistence;
+package com.controle.estoque.domain.repository;
 
 import com.controle.estoque.domain.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -2,6 +2,7 @@ package com.controle.estoque.domain.model;
 
 import com.controle.estoque.domain.enums.Category;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
@@ -10,6 +11,7 @@ import java.util.List;
 @Data
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "produtos")
 public class Product {
 
@@ -30,16 +32,13 @@ public class Product {
     @Column(name = "availableQuantity", nullable = false)
     private Integer availableQuantity;
 
+    @Column(nullable = false)
+    private Boolean active = true;
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<Sale> sales;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<StockMovement> stockMovements;
 
-    public Product(String name, Category category, BigDecimal price, Integer availableQuantity) {
-        this.name = name;
-        this.category = category;
-        this.price = price;
-        this.availableQuantity = availableQuantity;
-    }
 }
